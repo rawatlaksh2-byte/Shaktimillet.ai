@@ -9,3 +9,7 @@
   <a href="https://aistudio.google.com/apps">Start building</a>
 
 </div>
+
+## Shakti Millets YouTube Automation
+
+A draft AgentTube integration scaffold is available in [youtube-agent/](youtube-agent/README.md). It is configured for approval-first publishing and contains no API keys or OAuth secrets.
