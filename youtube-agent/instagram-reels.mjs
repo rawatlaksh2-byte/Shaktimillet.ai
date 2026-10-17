@@ -46,7 +46,7 @@ export class InstagramReelsPublisher {
   async #request(path, { method = "GET", params = {} } = {}) {
     const url = new URL(this.#endpoint(path));
     const body = new URLSearchParams();
-    for (const [key, value] of Object.entries({ ...params, access_token: this.accessToken })) {
+    for (const [key, value] of Object.entries(params)) {
       if (value !== undefined && value !== null) body.set(key, String(value));
     }
     if (method === "GET") {
@@ -54,7 +54,7 @@ export class InstagramReelsPublisher {
     }
     const response = await this.fetchImpl(url.toString(), {
       method,
-      headers: method === "GET" ? {} : { "content-type": "application/x-www-form-urlencoded" },
+      headers: { authorization: `Bearer ${this.accessToken}`, ...(method === "GET" ? {} : { "content-type": "application/x-www-form-urlencoded" }) },
       ...(method === "GET" ? {} : { body }),
     });
     let payload;
