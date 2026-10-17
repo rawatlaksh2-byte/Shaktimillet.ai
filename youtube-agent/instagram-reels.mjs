@@ -47,10 +47,13 @@ export class InstagramReelsPublisher {
     for (const [key, value] of Object.entries({ ...params, access_token: this.accessToken })) {
       if (value !== undefined && value !== null) body.set(key, String(value));
     }
+    if (method === "GET") {
+      for (const [key, value] of body.entries()) url.searchParams.set(key, value);
+    }
     const response = await this.fetchImpl(url.toString(), {
       method,
-      headers: { "content-type": "application/x-www-form-urlencoded" },
-      ...(method === "GET" ? { headers: {}, } : { body }),
+      headers: method === "GET" ? {} : { "content-type": "application/x-www-form-urlencoded" },
+      ...(method === "GET" ? {} : { body }),
     });
     let payload;
     try { payload = await response.json(); }
