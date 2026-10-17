@@ -1,0 +1,41 @@
+name: Shakti AgentTube Patch Check
+
+on:
+  push:
+    branches:
+      - youtube-automation
+    paths:
+      - 'youtube-agent/**'
+      - '.github/workflows/shakti-agenttube-check.yml'
+  pull_request:
+    paths:
+      - 'youtube-agent/**'
+      - '.github/workflows/shakti-agenttube-check.yml'
+
+jobs:
+  patch-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Shakti repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Clone pinned AgentTube
+        run: |
+          git clone https://github.com/darkzOGx/youtube-automation-agent.git agenttube
+          git -C agenttube checkout 941c3bee2b2c54f3f1a8e4dc9e034e061a5fed3a
+
+      - name: Apply Shakti Shorts patch
+        run: node youtube-agent/patch-shakti-shorts.mjs agenttube
+
+      - name: Syntax check patched files
+        run: |
+          node --check agenttube/index.js
+          node --check agenttube/agents/script-writer-agent.js
+          node --check agenttube/agents/production-management-agent.js
+          node --check agenttube/utils/scene-repair-service.js
+          node --check agenttube/utils/ai-video-generator.js

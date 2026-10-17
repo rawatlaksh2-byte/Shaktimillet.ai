@@ -1,0 +1,25 @@
+{
+  "objective": "Build Shakti Millets into a trusted millet education and product-discovery channel that consistently creates useful, factual content and converts interested viewers into qualified retail or wholesale enquiries.",
+  "audience": "Indian households, health-conscious but evidence-seeking consumers, home cooks, millet beginners, retailers and wholesalers interested in practical millet use and sourcing.",
+  "valueProposition": "Simple Hindi/Hinglish millet education, practical recipes, grain identification, processing differences and buying guidance using real Shakti Millets products without hype or unsupported health claims.",
+  "contentPillars": [
+    "Know Your Millet",
+    "Millet Recipes",
+    "Unpolished vs Semipolished vs Parboiled",
+    "Regional Names and Grain Identification",
+    "Cooking and Storage Tips",
+    "Shakti Millets Product Education",
+    "Retail and Wholesale Buying Guidance"
+  ],
+  "cadencePerWeek": 3,
+  "videosPerRun": 2,
+  "defaultFormat": "explainer",
+  "defaultLength": "short",
+  "successMetric": "Qualified engagement: retention, saves/comments, subscribers and product enquiries",
+  "primaryKpi": "engagement",
+  "targetWindowDays": 28,
+  "monthlyBudget": 0,
+  "outcomeCurrency": "INR",
+  "constraints": "Approval-first. Do not auto-publish. Do not invent nutritional, disease, cure, weight-loss, diabetes or medical claims. Use only verified product facts and approved source material. Do not invent prices, stock, discounts, certifications or availability. Keep Shakti Millets logo, pouch design and grain identity unchanged. Prefer Hindi/Hinglish narration. Brand line: Ghar Ki Thali Shakti Wali. Product visuals must use approved packaging/reference assets where available. Flag factual claims for review. Avoid competitor disparagement. Default visual target for Shorts is vertical 9:16. Aim for concise scenes and strong first 2-3 second hooks.",
+  "status": "draft"
+}

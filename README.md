@@ -1,11 +1,20 @@
-<div align="center">
+# Shakti Millets Automation
 
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+## Current milestone: Instagram Reels first
 
-  <h1>Built with AI Studio</h2>
+- [Mobile-friendly Instagram Recipe Studio prototype](instagram-dashboard/index.html)
+- [Dashboard scope, source recipe notes and production safety checklist](instagram-dashboard/README.md)
 
-  <p>The fastest path from prompt to production with Gemini.</p>
+We are implementing the Instagram workflow before returning to YouTube. Nothing is connected to a live account, and no public Reel has been published.
 
-  <a href="https://aistudio.google.com/apps">Start building</a>
+- [Instagram-first rollout guide](youtube-agent/INSTAGRAM-FIRST.md)
+- [Instagram Reels adapter](youtube-agent/instagram-reels.mjs)
+- [Instagram adapter tests](youtube-agent/instagram-reels.test.mjs)
+- [Approval queue prototype](youtube-agent/approval-queue.mjs)
+- [Approval queue tests](youtube-agent/approval-queue.test.mjs)
+- [Approval queue safety rules](youtube-agent/APPROVAL-QUEUE.md)
+- [Deployment runbook](youtube-agent/SOCIAL-DEPLOYMENT-RUNBOOK.md)
 
-</div>
+The adapter supports creating a Reel container and, after explicit approval plus a separate explicit Publish confirmation, requesting publication through Meta's official API. The queue still uses local JSON storage, so the project is **not production-ready** until an authenticated mobile-friendly approval screen and durable shared database are implemented and tested.
+
+No API keys or OAuth tokens belong in this repository. Do not enable background/scheduled publishing for this milestone.
