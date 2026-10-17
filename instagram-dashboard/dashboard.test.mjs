@@ -21,6 +21,6 @@ test("dashboard contains the expected millet recipe queue", () => {
 });
 test("publishing is locked in the front-end prototype", () => {
   assert.ok(html.includes("Publish to Instagram · locked"));
-  assert.ok(html.includes("temporary in-page state only"));
+  assert.ok(html.includes("temporary in this browser session only"));
   assert.ok(html.includes("https://drive.google.com/file/d/1NrklyW7oa6wXROgdQS49xJruYOzZ-GZZ/view"));
 });
