@@ -10,7 +10,7 @@ const script = html.slice(scriptStart + "<script>".length, scriptEnd);
 
 test("dashboard inline JavaScript parses", () => {
   assert.ok(scriptStart >= 0 && scriptEnd > scriptStart, "inline dashboard script exists");
-  assert.doesNotThrow(() => new vm.Script(script));
+  try { new vm.Script(script, { filename: "dashboard-inline.js" }); } catch (error) { assert.fail(error.stack); }
 });
 test("dashboard contains the expected millet recipe queue", () => {
   const ids = script.match(/id:"r[0-9]+"/g) || [];
