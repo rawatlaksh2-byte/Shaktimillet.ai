@@ -37,6 +37,7 @@ test("approvals are platform-specific and bind to the exact version", async (t) 
   const done = await queue.markPublished(item.id, "youtube", { externalId: "test-video-123" }, "owner");
   assert.equal(done.deliveries.youtube.status, "published");
   assert.equal(done.deliveries.instagram.status, "pending");
+  assert.equal(done.status, "needs_review", "item stays in review while another selected platform is unapproved");
 });
 
 test("any edit clears approvals and blocks the previously approved version", async (t) => {
