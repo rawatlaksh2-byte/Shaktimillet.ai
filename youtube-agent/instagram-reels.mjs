@@ -1,3 +1,5 @@
+import { hashContent } from "./approval-queue.mjs";
+
 /**
  * Instagram Reels adapter using Meta's official Instagram API.
  *
@@ -66,10 +68,22 @@ export class InstagramReelsPublisher {
    * Prepare only. This does not publish. videoUrl must be a public HTTPS URL
    * that Meta can fetch. Persist the returned containerId with the queue item.
    */
-  async prepareReel({ videoUrl, caption, shareToFeed = true }) {
+  async prepareReel({ queue, itemId, videoUrl, caption, shareToFeed = true }) {
+    if (!queue || typeof queue.get !== "function") throw new Error("ApprovalQueue is required");
+    const item = await queue.get(requireString(itemId, "itemId"));
+    if (!item.platforms.includes("instagram")) throw new Error("This content item is not for Instagram");
     const url = new URL(requireString(videoUrl, "videoUrl"));
     if (url.protocol !== "https:") throw new Error("videoUrl must use HTTPS");
+    if (url.toString() !== item.mediaRef) throw new Error("videoUrl must exactly match the approved queue item's mediaRef");
     if (typeof caption !== "string" || !caption.trim()) throw new Error("caption is required");
+    if (caption.trim() !== item.platformPayloads.instagram?.caption) {
+      throw new Error("caption must exactly match the Instagram caption in the review queue");
+    }
+    const versionHash = hashContent({
+      platform: "instagram",
+      mediaRef: item.mediaRef,
+      payload: item.platformPayloads.instagram,
+    });
     const result = await this.#request(`${this.igUserId}/media`, {
       method: "POST",
       params: {
@@ -80,7 +94,7 @@ export class InstagramReelsPublisher {
       },
     });
     if (!result?.id) throw new Error("Instagram did not return a media container ID");
-    return { containerId: String(result.id), status: "prepared_not_published" };
+    return { containerId: String(result.id), itemId: item.id, versionHash, status: "prepared_not_published" };
   }
 
   async getContainerStatus(containerId) {
@@ -99,6 +113,7 @@ export class InstagramReelsPublisher {
     containerId,
     actor,
     explicitPublishConfirmation = false,
+    preparedVersionHash,
   }) {
     if (explicitPublishConfirmation !== true) {
       throw new Error("Publishing blocked: an explicit human Publish confirmation is required");
@@ -110,6 +125,14 @@ export class InstagramReelsPublisher {
       throw new Error("Publishing blocked: this Instagram post has not been approved");
     }
 
+    const currentVersionHash = hashContent({
+      platform: "instagram",
+      mediaRef: item.mediaRef,
+      payload: item.platformPayloads.instagram,
+    });
+    if (!preparedVersionHash || preparedVersionHash !== currentVersionHash) {
+      throw new Error("Publishing blocked: prepared media does not match the current reviewed content version");
+    }
     const status = await this.getContainerStatus(id);
     if (status.status_code !== "FINISHED") {
       throw new Error(`Publishing blocked: Reel container is not ready (${status.status_code || "unknown"})`);
