@@ -10,8 +10,13 @@
 
 </div>
 
-## Shakti Millets YouTube Automation
+## Shakti Millets YouTube + Instagram Automation
 
-A draft AgentTube integration scaffold is available in [youtube-agent/](youtube-agent/README.md). It is configured for approval-first publishing and contains no API keys or OAuth secrets.
+A draft AgentTube integration scaffold is available in [youtube-agent/](youtube-agent/README.md). The scaffold contains no API keys or OAuth secrets.
 
-Deployment status: **not configured yet**. Use the [YouTube + Instagram deployment runbook](youtube-agent/SOCIAL-DEPLOYMENT-RUNBOOK.md) for the exact local smoke-test sequence, approval gates, Instagram prerequisites, and release checklist.
+- [Approval queue prototype and safety rules](youtube-agent/APPROVAL-QUEUE.md)
+- [Approval queue implementation](youtube-agent/approval-queue.mjs)
+- [Approval queue automated tests](youtube-agent/approval-queue.test.mjs)
+- [Deployment runbook](youtube-agent/SOCIAL-DEPLOYMENT-RUNBOOK.md)
+
+**Deployment status: not configured.** The approval queue is local-development-only and does not itself upload to YouTube or Instagram. No platform adapter, shared production database, account connection, or live publishing has been verified. Use the runbook before any deployment.
