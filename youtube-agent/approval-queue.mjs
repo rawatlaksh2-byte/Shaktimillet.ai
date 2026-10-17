@@ -11,7 +11,6 @@ import { dirname, resolve } from "node:path";
 import { mkdir } from "node:fs/promises";
 
 const PLATFORMS = new Set(["youtube", "instagram"]);
-const DELIVERY_STATES = new Set(["pending", "publishing", "published", "failed", "needs_reconciliation"]);
 
 function stable(value) {
   if (Array.isArray(value)) return value.map(stable);
@@ -239,7 +238,9 @@ export class ApprovalQueue {
     delivery.publishedAt = new Date().toISOString();
     delivery.lastError = null;
     item.updatedAt = new Date().toISOString();
-    item.status = item.platforms.every((p) => item.deliveries[p].status === "published") ? "published" : "approved";
+    const allPublished = item.platforms.every((p) => item.deliveries[p].status === "published");
+    const allApproved = item.platforms.every((p) => item.approvals[p]?.versionHash === platformHash(item, p));
+    item.status = allPublished ? "published" : allApproved ? "approved" : "needs_review";
     this.#audit(db, item, "published", actor, { platform, externalId: delivery.externalId });
     await this.#save(db);
     return structuredClone(item);
