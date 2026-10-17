@@ -90,13 +90,13 @@ test("approved Instagram Reel publishes only after the container is ready", asyn
   assert.equal(result.status, "published");
   assert.equal(result.externalId, "media-test");
   assert.equal(result.externalUrl, "https://www.instagram.com/reel/test/");
-  assert.equal(calls.length, 2);
-  assert.ok(calls[0].url.pathname.endsWith("/container-test"));
-  assert.equal(calls[0].url.searchParams.get("access_token"), null);
-  assert.equal(calls[0].headers?.authorization, undefined);
-  assert.ok(calls[1].url.pathname.endsWith("/ig-test/media_publish"));
-  assert.equal(calls[1].url.searchParams.get("access_token"), null, "credentials are not placed in the URL");
+  assert.equal(calls.length, 3);
+  assert.ok(calls[1].url.pathname.endsWith("/container-test"));
+  assert.equal(calls[1].url.searchParams.get("access_token"), null);
   assert.equal(calls[1].headers.authorization, "Bearer test-token-not-real");
+  assert.ok(calls[2].url.pathname.endsWith("/ig-test/media_publish"));
+  assert.equal(calls[2].url.searchParams.get("access_token"), null, "credentials are not placed in the URL");
+  assert.equal(calls[2].headers.authorization, "Bearer test-token-not-real");
   assert.equal((await queue.get(item.id)).deliveries.instagram.status, "published");
 });
 
