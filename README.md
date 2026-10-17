@@ -2,6 +2,9 @@
 
 ## Current milestone: Instagram Reels first
 
+- [Mobile-friendly Instagram Recipe Studio prototype](instagram-dashboard/index.html)
+- [Dashboard scope, source recipe notes and production safety checklist](instagram-dashboard/README.md)
+
 We are implementing the Instagram workflow before returning to YouTube. Nothing is connected to a live account, and no public Reel has been published.
 
 - [Instagram-first rollout guide](youtube-agent/INSTAGRAM-FIRST.md)
