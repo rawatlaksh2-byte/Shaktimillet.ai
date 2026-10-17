@@ -69,9 +69,11 @@ Before implementing or enabling Instagram publishing, confirm:
 
 Do not ask for passwords or tokens in chat. Do not use browser-password scraping or unofficial endpoints. If the account/API setup cannot publish Reels through the approved API, stop and surface that blocker rather than silently switching to a risky workaround.
 
-## Phase 3 — Shared approval queue (required before Instagram goes live)
+## Phase 3 — Shared approval queue (prototype added; production store still required)
 
-A single queue should store one content item with platform-specific delivery records:
+A local JSON-backed approval-gate prototype now exists in `youtube-agent/approval-queue.mjs`, with tests in `youtube-agent/approval-queue.test.mjs`. It enforces platform-specific, version-bound approval and blocks blind retries after uncertain outcomes. It is not a production shared queue: it has no cross-process locking, authenticated multi-user UI, or cloud durability guarantees. Do not deploy this JSON store for concurrent users or production publishing.
+
+Before Instagram goes live, replace the local store with a transactional shared database and connect an authenticated approval UI. A single queue should store one content item with platform-specific delivery records:
 
 - Content ID, status, created/updated timestamps
 - Video file/reference, title, caption, hashtags, thumbnail/cover
