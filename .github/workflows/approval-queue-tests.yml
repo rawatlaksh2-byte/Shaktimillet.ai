@@ -20,4 +20,4 @@ jobs:
         with:
           node-version: 20
       - name: Run approval queue tests
-        run: node --test youtube-agent/approval-queue.test.mjs
+        run: node --test youtube-agent/approval-queue.test.mjs youtube-agent/instagram-reels.test.mjs
