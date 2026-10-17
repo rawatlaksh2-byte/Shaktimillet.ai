@@ -21,7 +21,7 @@ async function fixture(t) {
 function fakeFetch(calls) {
   return async (input, init = {}) => {
     const url = new URL(input);
-    calls.push({ url, method: init.method || "GET", body: init.body });
+    calls.push({ url, method: init.method || "GET", body: init.body, headers: init.headers });
     let payload;
     if (url.pathname.endsWith("/ig-test/media") && init.method === "POST") payload = { id: "container-test" };
     else if (url.pathname.endsWith("/container-test")) payload = { id: "container-test", status_code: "FINISHED", status: "Finished" };
@@ -44,11 +44,16 @@ function publisher(calls) {
 test("preparing a Reel creates a container but never publishes it", async () => {
   const calls = [];
   const api = publisher(calls);
+  const { queue, item } = await fixture({ after: () => {} });
   const result = await api.prepareReel({
-    videoUrl: "https://media.example.test/reel.mp4",
+    queue, itemId: item.id,
+    videoUrl: "https://media.example.test/shakti-reel.mp4",
     caption: "Ghar Ki Thali, Shakti Wali",
   });
-  assert.deepEqual(result, { containerId: "container-test", status: "prepared_not_published" });
+  assert.equal(result.containerId, "container-test");
+  assert.equal(result.status, "prepared_not_published");
+  assert.equal(result.itemId, item.id);
+  assert.ok(result.versionHash);
   assert.equal(calls.length, 1);
   assert.ok(!calls.some((call) => call.url.pathname.endsWith("/media_publish")));
   assert.equal(calls[0].method, "POST");
@@ -73,18 +78,25 @@ test("approved Instagram Reel publishes only after the container is ready", asyn
   const api = publisher(calls);
   const { queue, item } = await fixture(t);
   await queue.approve(item.id, "instagram", "owner");
+  const prepared = await api.prepareReel({
+    queue, itemId: item.id,
+    videoUrl: item.mediaRef,
+    caption: item.platformPayloads.instagram.caption,
+  });
   const result = await api.publishApprovedReel({
-    queue, itemId: item.id, containerId: "container-test", actor: "owner",
-    explicitPublishConfirmation: true,
+    queue, itemId: item.id, containerId: prepared.containerId, actor: "owner",
+    explicitPublishConfirmation: true, preparedVersionHash: prepared.versionHash,
   });
   assert.equal(result.status, "published");
   assert.equal(result.externalId, "media-test");
   assert.equal(result.externalUrl, "https://www.instagram.com/reel/test/");
   assert.equal(calls.length, 2);
   assert.ok(calls[0].url.pathname.endsWith("/container-test"));
-  assert.equal(calls[0].url.searchParams.get("access_token"), "test-token-not-real");
+  assert.equal(calls[0].url.searchParams.get("access_token"), null);
+  assert.equal(calls[0].headers?.authorization, undefined);
   assert.ok(calls[1].url.pathname.endsWith("/ig-test/media_publish"));
-  assert.equal(calls[1].url.searchParams.get("access_token"), null, "POST credentials stay in the form body");
+  assert.equal(calls[1].url.searchParams.get("access_token"), null, "credentials are not placed in the URL");
+  assert.equal(calls[1].headers.authorization, "Bearer test-token-not-real");
   assert.equal((await queue.get(item.id)).deliveries.instagram.status, "published");
 });
 
@@ -102,7 +114,9 @@ test("a Reel that is still processing cannot be published", async (t) => {
   });
   await assert.rejects(notReady.publishApprovedReel({
     queue, itemId: item.id, containerId: "container-test", actor: "owner",
-    explicitPublishConfirmation: true,
+    explicitPublishConfirmation: true, preparedVersionHash: (await import("./approval-queue.mjs")).hashContent({
+      platform: "instagram", mediaRef: item.mediaRef, payload: item.platformPayloads.instagram,
+    }),
   }), /container is not ready/);
   assert.equal((await queue.get(item.id)).deliveries.instagram.status, "pending");
   assert.equal(calls.length, 1);
