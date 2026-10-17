@@ -24,7 +24,7 @@ The initial queue contains 15 millet/pulse recipe drafts adapted from the saved 
 - Little Millet Upma
 - Browntop Millet Pulao
 - Proso Millet Lemon Rice
-- Kodo Millet Pongal (explicitly held for recipe-sheet verification)
+- Foxtail Millet Pongal (explicitly held for recipe-sheet verification)
 
 Actual rice-SKU recipes are excluded from this first queue; millet dishes with “lemon rice” or “curd rice” names are retained because the grain is millet. Content includes short Hindi voice-over drafts, preparation/cooking scene notes, caption drafts, and recipe review warnings.
 
