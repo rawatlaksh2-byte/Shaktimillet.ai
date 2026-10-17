@@ -60,7 +60,10 @@ export class InstagramReelsPublisher {
     let payload;
     try { payload = await response.json(); }
     catch { throw new Error(`Instagram API returned a non-JSON response (HTTP ${response.status})`); }
-    if (!response.ok || payload?.error) throw new Error(safeError(payload, response.status));
+    if (!response.ok || payload?.error) {
+      const message = safeError(payload, response.status).replaceAll(this.accessToken, "[redacted]");
+      throw new Error(message);
+    }
     return payload;
   }
 
